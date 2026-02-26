@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="AppHost/AppHost.csproj" Id="c7ac5b37-d480-42e5-9b14-c1cb663f651b" />
+  <Project Path="Application/Application.csproj" />
+  <Project Path="Domain/Domain.csproj" />
+  <Project Path="Function/Function.csproj" Id="90363d05-c347-4d01-bb23-9c1d12fd1630" />
+  <Project Path="Infrastructure/Infrastructure.csproj" />
+  <Project Path="Persistence/Persistence.csproj" Id="ea988a56-4baf-4fd3-b38b-dbf5636d937d" />
+  <Project Path="ServiceDefaults/ServiceDefaults.csproj" Id="2553e33e-d63c-4c2d-8901-953d7ed97b23" />
+  <Project Path="WebAPI/WebAPI.csproj" />
+</Solution>
