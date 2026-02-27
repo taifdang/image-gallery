@@ -1,18 +1,19 @@
+using Domain.Entities;
 using Domain.Repositories;
 
 namespace Application.FileEntries.Services;
 
-public class FileService<TEntity> : IFileService<TEntity> where TEntity : Entity<Guid>
+public class FileService : IFileService
 {
     private readonly IUnitOfWork _unitOfWork;
-    protected readonly IRepository<TEntity, Guid> _repository;
+    protected readonly IRepository<FileEntry, Guid> _repository;
 
-    public FileService(IUnitOfWork unitOfWork, IRepository<TEntity, Guid> repository)
+    public FileService(IUnitOfWork unitOfWork, IRepository<FileEntry, Guid> repository)
     {
         _unitOfWork = unitOfWork;
         _repository = repository;
     }
-    public async Task AddOrUpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task AddOrUpdateAsync(FileEntry entity, CancellationToken cancellationToken = default)
     {
         if (entity.Id.Equals(default))
         {
@@ -26,13 +27,13 @@ public class FileService<TEntity> : IFileService<TEntity> where TEntity : Entity
         }
     }
 
-    public async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(FileEntry entity, CancellationToken cancellationToken = default)
     {
         _repository.Delete(entity);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public Task<FileEntry> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         if(id == Guid.Empty)
         {
@@ -41,8 +42,8 @@ public class FileService<TEntity> : IFileService<TEntity> where TEntity : Entity
         return _repository.FirstOrDefaultAsync(_repository.GetQueryableSet().Where(x => x.Id == id));
     }
 
-    public Task<List<TEntity>> GetAsync(CancellationToken cancellationToken = default)
+    public Task<List<FileEntry>> GetAsync(CancellationToken cancellationToken = default)
     {
-        return _repository.ToListAsync(_repository.GetQueryableSet());
+        return _repository.ToListAsync(_repository.GetQueryableSet().Where(x => !x.Deleted));
     }
 }

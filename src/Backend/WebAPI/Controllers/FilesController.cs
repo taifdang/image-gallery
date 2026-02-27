@@ -20,7 +20,7 @@ public class FilesController : Controller
 {
     private readonly AppSettings _options;
     private readonly IFileStorageManager _fileManager;
-    private readonly IFileService<FileEntry> _fileService;
+    private readonly IFileService _fileService;
     private readonly IEventPublisher _publisher;
     private readonly IRepository<FileEntryImage, Guid> _fileEntryImageRepository;
 
@@ -28,7 +28,7 @@ public class FilesController : Controller
     public FilesController(
         IOptions<AppSettings> options,
         IFileStorageManager fileManager,
-        IFileService<FileEntry> fileService,
+        IFileService fileService,
         IEventPublisher publisher,
         IRepository<FileEntryImage, Guid> fileEntryImageRepository)
     {
@@ -147,7 +147,7 @@ public class FilesController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> Get()
     {
         var fileEntries = await _fileService.GetAsync();
         return Ok(fileEntries.ToModels());

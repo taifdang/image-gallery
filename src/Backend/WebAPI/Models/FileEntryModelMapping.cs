@@ -20,8 +20,10 @@ public static class FileEntryModelMapping
         {
             Id = fileEntry.Id,
             Name = fileEntry.Name,
+            Description = fileEntry.Description,
             Size = fileEntry.Size,
             UploadedAt = fileEntry.UploadedAt,
+            FileName = fileEntry.FileName,
             FileLocation = fileEntry.FileLocation
         };
     }
