@@ -22,7 +22,7 @@ public class AzureBlobStorageManager : IFileStorageManager
         await _container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
         BlobClient blob = _container.GetBlobClient(GetBlobName(fileEntry));
-        await blob.UploadAsync(stream, overwrite: true, cancellationToken);
+        await blob.UploadAsync(stream, overwrite: true, cancellationToken: cancellationToken);
     }
 
     public Task DeleteAsync(IFileEntry fileEntry, CancellationToken cancellationToken = default)

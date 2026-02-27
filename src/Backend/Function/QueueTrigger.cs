@@ -14,7 +14,7 @@ public class QueueTrigger
     }
 
     [Function(nameof(QueueTrigger))]
-    public void Run([QueueTrigger("file-processing-queue", Connection = "QueueTriggerConnection")] QueueMessage message)
+    public void Run([QueueTrigger("images-to-resize", Connection = "QueueTriggerConnection")] QueueMessage message)
     {
         _logger.LogInformation("C# Queue trigger function processed: {messageText}", message.MessageText);
     }
