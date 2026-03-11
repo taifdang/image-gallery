@@ -1,15 +1,19 @@
 import { Box, Container, useDrawer } from "@chakra-ui/react"
 import { FileUploadDrawer, StorageHeader, StorageTable } from "./components";
+import { useState } from "react";
+import type { FileEntryModel } from "./types";
 
 export function StoragePage() {
 
-    const items = [
-        { id: 1, name: "Laptop", description: "Electronics", uploadedAt: "2024-06-01", size: 999.99 },
-        { id: 2, name: "Coffee Maker", description: "Home Appliances", uploadedAt: "2024-06-02", size: 49.99 },
-        { id: 3, name: "Desk Chair", description: "Furniture", uploadedAt: "2024-06-03", size: 150.0 },
-        { id: 4, name: "Smartphone", description: "Electronics", uploadedAt: "2024-06-04", size: 799.99 },
-        { id: 5, name: "Headphones", description: "Accessories", uploadedAt: "2024-06-05", size: 199.99 },
+    const __dummydata: FileEntryModel[] = [
+        { id: "1", name: "Laptop", description: "Electronics", uploadedAt: "2024-06-01", size: 999.99 },
+        { id: "2", name: "Coffee Maker", description: "Home Appliances", uploadedAt: "2024-06-02", size: 49.99 },
+        { id: "3", name: "Desk Chair", description: "Furniture", uploadedAt: "2024-06-03", size: 150.0 },
+        { id: "4", name: "Smartphone", description: "Electronics", uploadedAt: "2024-06-04", size: 799.99 },
+        { id: "5", name: "Headphones", description: "Accessories", uploadedAt: "2024-06-05", size: 199.99 },
     ]
+
+    const [data, setData] = useState<FileEntryModel[]>(__dummydata)
 
     const drawer = useDrawer();
 
@@ -41,7 +45,7 @@ export function StoragePage() {
         <Container centerContent p={4}>
             <Box minWidth="1000px" p="4" color="black"  >
                 <StorageHeader onShowDrawer={() => drawer.setOpen(true)} />
-                <StorageTable items={items} />
+                <StorageTable items={data} />
             </Box>
             <FileUploadDrawer drawer={drawer} />
         </Container>

@@ -1,19 +1,12 @@
 import { Box, Button, Checkbox, Menu, Portal, Table } from "@chakra-ui/react";
 import { VscEllipsis, VscEye, VscTrash } from "react-icons/vsc";
 import { GoMoveToBottom } from "react-icons/go";
-
-type Item = {
-    id: number
-    name: string
-    description: string
-    uploadedAt: string
-    size: number
-}
+import type { FileEntryModel } from "../types";
 
 type Props = {
-    item: Item
-    selection: number[]
-    setSelection: React.Dispatch<React.SetStateAction<number[]>>
+    item: FileEntryModel
+    selection: string[]
+    setSelection: React.Dispatch<React.SetStateAction<string[]>>
 }
 
 export function StorageTableItem({ item, selection, setSelection }: Props) {

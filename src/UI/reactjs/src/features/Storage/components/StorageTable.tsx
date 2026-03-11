@@ -1,22 +1,15 @@
-import { Checkbox, Table, TableCell, Box } from "@chakra-ui/react"
+import { Checkbox, Table, Box } from "@chakra-ui/react"
 import { useState } from "react"
 import { StorageTableItem } from "./StorageTableItem";
-
-type Item = {
-    id: number,
-    name: string,
-    description: string,
-    uploadedAt: string,
-    size: number
-}
+import type { FileEntryModel } from "../types";
 
 type Props = {
-    items: Item[]
+    items: FileEntryModel[]
 }
 
 export function StorageTable({ items }: Props) {
 
-    const [selection, setSelection] = useState<number[]>([])
+    const [selection, setSelection] = useState<string[]>([])
     const hasSelection = selection.length > 0
     const indeterminate = selection.length > 0 && selection.length < items.length
 
@@ -30,7 +23,7 @@ export function StorageTable({ items }: Props) {
                                 size="sm"
                                 mt="0.5"
                                 aria-label="Select all rows"
-                                checked={indeterminate ? "indeterminate" : selection.length === items.length}
+                                checked={indeterminate ? "indeterminate" : selection.length > 0}
                                 onCheckedChange={(changes) => {
                                     setSelection(
                                         changes.checked ? items.map((item) => item.id) : [],
@@ -49,9 +42,9 @@ export function StorageTable({ items }: Props) {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {items.length === 0 ? (
+                    { items?.length === 0 ? (
                         <Table.Row>
-                            <TableCell colSpan={6} border="none" >No items found</TableCell>
+                            <Table.Cell colSpan={6} border="none" >No items found</Table.Cell>
                         </Table.Row>
                     ) : (
                         items.map((item) => (
