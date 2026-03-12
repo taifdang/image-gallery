@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Separator } from "@chakra-ui/react";
-import { VscAdd, VscRefresh, VscTrash } from "react-icons/vsc";
+import { VscRefresh, VscTrash } from "react-icons/vsc";
 import { GoMoveToBottom } from "react-icons/go";
 
 type StorageHeaderProps = {
