@@ -39,7 +39,7 @@ npm install
 npm run dev
 ```
 - Go to http://localhost:5173/
-
-<img width="1499" height="942" alt="image" src="https://github.com/user-attachments/assets/65fa5fff-8449-46c9-82c3-590748d1dcc2" />
+- 
+<img width="1499" height="935" alt="image" src="https://github.com/user-attachments/assets/8d8753c2-3142-45c9-b61b-391d69718363" />
 
 
