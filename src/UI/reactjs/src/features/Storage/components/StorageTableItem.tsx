@@ -5,11 +5,15 @@ import type { FileEntryModel } from "../types";
 
 type Props = {
     item: FileEntryModel
-    selection: string[]
-    setSelection: React.Dispatch<React.SetStateAction<string[]>>
+    selection: string[],
+    onSelect: (id: string, checked: boolean) => void
+    onPreview: (id: string) => void,
+    onDownload: (id: string) => void,
+    onDelete: (id: string) => void,
+
 }
 
-export function StorageTableItem({ item, selection, setSelection }: Props) {
+export function StorageTableItem({ item, selection, onSelect, onPreview, onDownload, onDelete }: Props) {
     return (
         <Table.Row
             key={item.id}
@@ -22,11 +26,7 @@ export function StorageTableItem({ item, selection, setSelection }: Props) {
                     aria-label="Select row"
                     checked={selection.includes(item.id)}
                     onCheckedChange={(changes) => {
-                        setSelection((prev) =>
-                            changes.checked
-                                ? [...prev, item.id]
-                                : selection.filter((id) => id !== item.id),
-                        )
+                        onSelect(item.id, !!changes.checked)
                     }}
                 >
                     <Checkbox.HiddenInput />
@@ -49,15 +49,15 @@ export function StorageTableItem({ item, selection, setSelection }: Props) {
                             <Menu.Content>
                                 <Menu.Item value="preview">
                                     <VscEye />
-                                    <Box flex="1">Preview</Box>
+                                    <Box flex="1" onClick={() => onPreview(item.id)}>Preview</Box>
                                 </Menu.Item>
                                 <Menu.Item value="download">
                                     <GoMoveToBottom />
-                                    <Box flex="1">Download</Box>
+                                    <Box flex="1" onClick={() => onDownload(item.id)}>Download</Box>
                                 </Menu.Item>
                                 <Menu.Item value="delete">
                                     <VscTrash />
-                                    <Box flex="1">Delete</Box>
+                                    <Box flex="1" onClick={() => onDelete(item.id)}>Delete</Box>
                                 </Menu.Item>
                             </Menu.Content>
                         </Menu.Positioner>

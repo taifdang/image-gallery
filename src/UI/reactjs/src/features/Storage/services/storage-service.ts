@@ -1,11 +1,11 @@
 import { apiClient } from "../../../lib/api-client";
 import type { FileEntryModel } from "../types";
 
-export async function get(id: string) {
+export function get(id: string) {
     return apiClient.get<FileEntryModel>(`api/files/${id}`);
 }
 
-export async function getList() {
+export function getList() {
     return apiClient.get<FileEntryModel[]>("api/files");
 }
 
@@ -26,11 +26,19 @@ export async function uploadFile(file: File) {
         })
 }
 
-export async function deleteFile(id: string) {
+export function deleteFile(id: string) {
     return apiClient.delete(`api/files/${id}`);
 }
 
-export async function downloadFile(id: string) {
+export function deleteFiles(ids: string[]) {
+    return apiClient.delete("api/files/bulkdelete", {
+        data: {
+            ids
+        }
+    });
+}
+
+export function downloadFile(id: string) {
     return apiClient.get(`api/files/${id}/downloadimage`, {
         responseType: "blob"
     });

@@ -3,11 +3,13 @@ import { VscRefresh, VscTrash } from "react-icons/vsc";
 import { GoMoveToBottom } from "react-icons/go";
 
 type StorageHeaderProps = {
+    selection: string[]
     onShowDrawer: () => void,
     onRefresh: () => void,
+    onBulkDelete: (ids: string[]) => void,
 }
 
-export function StorageHeader({ onShowDrawer, onRefresh }: StorageHeaderProps) {
+export function StorageHeader({ selection, onShowDrawer, onRefresh, onBulkDelete }: StorageHeaderProps) {
 
     return (
         <Box>
@@ -19,7 +21,14 @@ export function StorageHeader({ onShowDrawer, onRefresh }: StorageHeaderProps) {
                 </Box>
                 <Button bg="none" color="black" onClick={() => onRefresh()}><VscRefresh />Refresh</Button>
                 <Separator orientation="vertical" height="4" />
-                <Button bg="none" color="black" ><VscTrash />Delete</Button>
+                <Button
+                    bg="none"
+                    color="black"
+                    onClick={() => onBulkDelete(selection)}
+                    disabled={selection.length == 0} >
+                    <VscTrash />
+                    Delete
+                </Button>
             </Flex>
         </Box>
     )
