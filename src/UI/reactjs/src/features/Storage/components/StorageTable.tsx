@@ -42,7 +42,7 @@ export function StorageTable({ items }: Props) {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    { items?.length === 0 ? (
+                    { !items || items.length === 0 ? (
                         <Table.Row>
                             <Table.Cell colSpan={6} border="none" >No items found</Table.Cell>
                         </Table.Row>

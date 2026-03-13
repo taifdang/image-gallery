@@ -3,20 +3,21 @@ import { VscRefresh, VscTrash } from "react-icons/vsc";
 import { GoMoveToBottom } from "react-icons/go";
 
 type StorageHeaderProps = {
-    onShowDrawer: () => void
+    onShowDrawer: () => void,
+    onRefresh: () => void,
 }
 
-export function StorageHeader({ onShowDrawer }: StorageHeaderProps) {
+export function StorageHeader({ onShowDrawer, onRefresh }: StorageHeaderProps) {
 
     return (
         <Box>
             <Flex gap="3" align="center" >
                 <Box px="0">
                     <Button bg="none" color="black" px="2" onClick={() => onShowDrawer()}>
-                        <GoMoveToBottom style={{ transform: "rotate(180deg)" }}/> Upload
-                    </Button>                 
+                        <GoMoveToBottom style={{ transform: "rotate(180deg)" }} /> Upload
+                    </Button>
                 </Box>
-                <Button bg="none" color="black" ><VscRefresh />Refresh</Button>
+                <Button bg="none" color="black" onClick={() => onRefresh()}><VscRefresh />Refresh</Button>
                 <Separator orientation="vertical" height="4" />
                 <Button bg="none" color="black" ><VscTrash />Delete</Button>
             </Flex>

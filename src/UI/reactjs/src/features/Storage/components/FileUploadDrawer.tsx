@@ -4,10 +4,10 @@ import { VscCloudUpload } from "react-icons/vsc";
 
 type Props = {
     drawer: UseDrawerReturn,
-    handleUpload: (files: File[]) => void
+    onUpload: (files: File[]) => void
 }
 
-export function FileUploadDrawer({ drawer, handleUpload }: Props) {
+export function FileUploadDrawer({ drawer, onUpload }: Props) {
 
     // ref: https://chakra-ui.com/docs/components/file-upload
     // ref: https://chakra-ui.com/docs/components/file-upload#store
@@ -66,7 +66,7 @@ export function FileUploadDrawer({ drawer, handleUpload }: Props) {
                         </Drawer.Body>
                         <Drawer.Footer justifyContent="flex-start" >
                             <Button
-                                onClick={() => { fileUpload.clearFiles(); handleUpload(files); }}
+                                onClick={() => { fileUpload.clearFiles(); onUpload(files); }}
                                 disabled={files.length === 0}
                             >
                                 Upload
