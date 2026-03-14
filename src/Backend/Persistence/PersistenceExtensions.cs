@@ -22,6 +22,7 @@ public static class Extensions
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+        services.AddScoped<IFileEntryRepository, FileEntryRepository>();
 
         services.AddScoped(typeof(IUnitOfWork), services =>
         {

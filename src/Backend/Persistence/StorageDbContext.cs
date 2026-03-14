@@ -17,11 +17,13 @@ public class StorageDbContext : DbContext, IUnitOfWork
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(StorageDbContext).Assembly);
+        
     }
 
     //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=data-annotations#resolving-concurrency-conflicts
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        HandleFileEntriesDeleted();
         try
         {
             return await base.SaveChangesAsync(cancellationToken);
@@ -41,6 +43,17 @@ public class StorageDbContext : DbContext, IUnitOfWork
             }
             
             return await base.SaveChangesAsync(cancellationToken);
+        }
+    }
+
+    private void HandleFileEntriesDeleted()
+    {
+        var entities = ChangeTracker.Entries<FileEntry>();
+        foreach (var entry in entities.Where(e => e.State == EntityState.Deleted))
+        {
+            entry.State = EntityState.Modified;
+            entry.Entity.Deleted = true;
+            entry.Entity.DeletedAt = DateTimeOffset.UtcNow;
         }
     }
 }

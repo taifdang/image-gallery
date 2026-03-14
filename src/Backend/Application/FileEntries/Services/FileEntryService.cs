@@ -39,7 +39,7 @@ public class FileEntryService : IFileEntryService
         {
             throw new ArgumentException("Invalid Id");
         }
-        return _repository.FirstOrDefaultAsync(_repository.GetQueryableSet().Where(x => x.Id == id));
+        return _repository.FirstOrDefaultAsync(_repository.GetQueryableSet().Where(x => x.Id == id && !x.Deleted));
     }
 
     public Task<List<FileEntry>> GetAsync(CancellationToken cancellationToken = default)

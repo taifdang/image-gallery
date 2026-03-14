@@ -32,9 +32,7 @@ export function deleteFile(id: string) {
 
 export function deleteFiles(ids: string[]) {
     return apiClient.delete("api/files/bulkdelete", {
-        data: {
-            ids
-        }
+        data: ids
     });
 }
 

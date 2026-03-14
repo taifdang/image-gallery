@@ -23,18 +23,21 @@ public class FilesController : Controller
     private readonly IFileEntryService _fileEntryService;
     private readonly IMessageBus _messageBus;
     private readonly IRepository<FileEntryImage, Guid> _fileEntryImageRepository;
+    private readonly IFileEntryRepository _fileEntryRepository;
 
     public FilesController(
         IOptions<AppSettings> options,
         IFileStorageManager fileManager,
         IFileEntryService fileService,
         IRepository<FileEntryImage, Guid> fileEntryImageRepository,
+        IFileEntryRepository fileEntryRepository,
         IMessageBus messageBus)
     {
         _options = options.Value;
         _fileManager = fileManager;
         _fileEntryService = fileService;
         _fileEntryImageRepository = fileEntryImageRepository;
+        _fileEntryRepository = fileEntryRepository;
         _messageBus = messageBus;
     }
 
@@ -101,10 +104,15 @@ public class FilesController : Controller
             return NotFound();
         }
 
-        fileEntry.Deleted = true;
-        fileEntry.DeletedAt = DateTimeOffset.UtcNow;
+        await _fileEntryService.DeleteAsync(fileEntry);
 
-        await _fileEntryService.AddOrUpdateAsync(fileEntry);
+        return Ok();
+    }
+
+    [HttpDelete("bulkdelete")]
+    public async Task<IActionResult> BulkDelete([FromBody] Guid[] ids)
+    {
+        await _fileEntryRepository.DeleteFilesAsync(ids.ToList());
 
         return Ok();
     }
