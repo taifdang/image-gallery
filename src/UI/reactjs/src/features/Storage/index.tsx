@@ -1,6 +1,6 @@
 import { Container, useDrawer } from "@chakra-ui/react"
 import { FileUploadDrawer, StorageHeader, StorageTable } from "./components";
-import { Toaster, toaster } from "../../components/ui/toaster";
+import { toaster } from "../../components/ui/toaster";
 import { useStorage } from "./hooks/useStorage";
 import { uploadFile, deleteFile, deleteFiles, downloadFile } from "./services/storage-service";
 import { useState } from "react";
@@ -12,42 +12,68 @@ export function StoragePage() {
 
     const drawer = useDrawer();
 
+    // ref: https://www.chakra-ui.com/docs/components/toast#update
     const handleUpload = async (files: File[]) => {
 
-        if (!files || files.length === 0) {
-            console.log("No files selected for upload.");
-            return;
+        if (!files || files.length === 0) return;
+
+        const toastId = toaster.create({
+            title: "Uploading...",
+            description: `Uploading ${files.length} file(s)`,
+            type: "loading",
+        });
+
+        const results = await Promise.allSettled(
+            files.map((file) => uploadFile(file))
+        );
+
+        const successCount = results.filter(r => r.status === "fulfilled").length;
+        const failCount = results.filter(r => r.status === "rejected").length;
+
+        if (successCount === files.length) {
+            toaster.update(toastId, {
+                title: "Success",
+                description: `${successCount} file(s) uploaded`,
+                type: "success",
+            });
         }
 
-        for (const file of files) {
-
-            // You can add validation here if needed (e.g., file type, size)}
-            await uploadFile(file)
-                .then(() => {
-                    // toast
-                    refresh();
-                })
-                .catch((error) => {
-                    console.error(`Error uploading file "${file.name}":`, error);
-                    // toast
-                })
+        else if (failCount > 0 && successCount > 0) {
+            toaster.update(toastId, {
+                title: "Partial Success",
+                description: `${successCount} file(s) uploaded, ${failCount} file(s) failed`,
+                type: "warning",
+            });
         }
+
+        else {
+            toaster.update(toastId, {
+                title: "Error",
+                description: `Failed to upload ${failCount} file(s)`,
+                type: "error",
+            });
+        }
+
     }
 
     const handleRefresh = () => {
-        console.log("Refreshing data...");
         refresh();
     }
 
     const handleDelete = async (id: string) => {
         await deleteFile(id)
             .then(() => {
-                //toast
+                toaster.create({
+                    description: "File deleted successfully",
+                    type: "success",
+                });
                 refresh();
             })
-            .catch((error) => {
-                console.error(`Error deleting file with id "${id}":`, error);
-                // toast
+            .catch(() => {
+                toaster.create({
+                    description: "Error deleting file",
+                    type: "error",
+                });
             });
     }
 
@@ -59,11 +85,18 @@ export function StoragePage() {
 
         await deleteFiles(selection)
             .then(() => {
+                toaster.create({
+                    description: "Files deleted successfully",
+                    type: "success",
+                });
                 setSelection([]);
                 refresh();
             })
-            .catch((error) => {
-                console.error(`Error deleting files with ids "${selection.join(", ")}":`, error);
+            .catch(() => {
+                toaster.create({
+                    description: "Error deleting files",
+                    type: "error",
+                });
             });
     }
 
@@ -97,8 +130,11 @@ export function StoragePage() {
                 window.URL.revokeObjectURL(href);
 
             })
-            .catch((error) => {
-                console.error(`Error downloading image with id "${id}":`, error);
+            .catch(() => {
+                toaster.create({
+                    description: "Error downloading file",
+                    type: "error",
+                });
             });
     }
 
@@ -108,7 +144,6 @@ export function StoragePage() {
     // }
 
     const handlePreview = async (id: string) => {
-
         await downloadFile(id)
             .then((response) => {
 
@@ -117,7 +152,10 @@ export function StoragePage() {
                 const openNewTab = window.open(href, "_blank");
 
                 if (!openNewTab) {
-                    console.error("Popup blocked.");
+                    toaster.create({
+                        description: "Popup blocked.",
+                        type: "error",
+                    });
                     return;
                 }
 
@@ -127,8 +165,11 @@ export function StoragePage() {
                 }, 2000)
 
             })
-            .catch((error) => {
-                console.error(`Error previewing image with id "${id}":`, error);
+            .catch(() => {
+                toaster.create({
+                    description: "Error previewing image",
+                    type: "error",
+                });
             });
     }
 
@@ -149,7 +190,7 @@ export function StoragePage() {
 
     return (
         <>
-            <Container mt={4} pe={0} maxWidth="1000px" color="black">
+            <Container mt={4} p={0} maxWidth="1000px" color="black">
                 <StorageHeader
                     onShowDrawer={() => drawer.setOpen(true)}
                     onRefresh={handleRefresh}
@@ -166,7 +207,6 @@ export function StoragePage() {
                     onDelete={handleDelete}
                 />
                 <FileUploadDrawer drawer={drawer} onUpload={handleUpload} />
-                <Toaster />
             </Container>
         </>
     )
