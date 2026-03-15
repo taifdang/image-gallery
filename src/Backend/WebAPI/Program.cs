@@ -54,9 +54,9 @@ services.AddSwaggerGen(c =>
 
 services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    options.AddPolicy("AllowedOrigins", builder =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        builder.WithOrigins(appSettings.CORS.AllowedOrigins)
               .AllowAnyMethod()
               .AllowAnyHeader()
               .WithExposedHeaders("Content-Disposition");
@@ -85,7 +85,7 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-app.UseCors("AllowFrontend");
+app.UseCors("AllowedOrigins");
 
 app.MapControllers();
 

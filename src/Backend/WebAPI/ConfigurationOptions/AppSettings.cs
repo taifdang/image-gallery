@@ -6,6 +6,7 @@ namespace WebAPI.ConfigurationOptions;
 public class AppSettings
 {
     public ConnectionStrings ConnectionStrings { get; set; }
+    public CORS CORS { get; set; }
     public StorageOptions Storage { get; set; }
     public MessagingOptions Messaging { get; set; }
 }
