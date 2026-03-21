@@ -53,7 +53,7 @@ public class FilesController : Controller
             UploadedAt = DateTimeOffset.UtcNow,
             Processed = false,
             Deleted = false
-        }; 
+        };
 
         await _fileEntryService.AddOrUpdateAsync(fileEntry);
 
@@ -164,6 +164,19 @@ public class FilesController : Controller
         var ext = Path.GetExtension(fileEntryImage.ImageLocation).ToLowerInvariant();
 
         return File(stream, fileEntry.Description, WebUtility.HtmlEncode(fileEntry.FileName));
+    }
+
+    [HttpGet("{id}/signedurl")]
+    public async Task<IActionResult> GetSignedUrl(Guid id)
+    {
+        var fileEntry = await _fileEntryService.GetByIdAsync(id);
+        if (fileEntry == null)
+        {
+            return NotFound();
+        }
+
+        var url = _fileManager.GenerateSignedUrl(fileEntry.ToModel());
+        return Ok(url);
     }
 
     [HttpGet]

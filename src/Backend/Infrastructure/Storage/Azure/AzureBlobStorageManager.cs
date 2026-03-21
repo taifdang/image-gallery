@@ -1,6 +1,7 @@
 ﻿
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 
 namespace Infrastructure.Storage.Azure;
 
@@ -19,10 +20,18 @@ public class AzureBlobStorageManager : IFileStorageManager
         return Path.Combine(_option.Path, fileEntry.FileLocation);
     }
 
+    public string GenerateSignedUrl(IFileEntry fileEntry)
+    {
+        var blobClient = _container.GetBlobClient(GetBlobName(fileEntry));
+        var url = blobClient.GenerateSasUri(BlobSasPermissions.Read, DateTimeOffset.UtcNow.AddMinutes(10));
+
+        return url.ToString();
+    }
+
     public async Task CreateAsync(IFileEntry fileEntry, Stream stream, CancellationToken cancellationToken = default)
     {
         await _container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-        
+
         BlobClient blob = _container.GetBlobClient(GetBlobName(fileEntry));
         await blob.UploadAsync(stream, overwrite: true, cancellationToken: cancellationToken);
     }
@@ -35,7 +44,7 @@ public class AzureBlobStorageManager : IFileStorageManager
 
         var options = new BlobUploadOptions();
 
-        if(!string.IsNullOrEmpty(contentType))
+        if (!string.IsNullOrEmpty(contentType))
         {
             options.HttpHeaders = new BlobHttpHeaders
             {

@@ -4,9 +4,15 @@ namespace Infrastructure.Storage.Fake;
 
 public class FakeStorageManager : IFileStorageManager
 {
+
+    public string GenerateSignedUrl(IFileEntry fileEntry)
+    {
+        return $"https://fake-storage.com/{fileEntry.FileLocation}";
+    }
+
     public Task CreateAsync(IFileEntry fileEntry, Stream stream, CancellationToken cancellationToken = default)
     {
-       return Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
     public Task CreateAsync(IFileEntry fileEntry, Stream stream, string contentType, CancellationToken cancellationToken = default)
