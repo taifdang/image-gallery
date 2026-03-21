@@ -1,5 +1,4 @@
-﻿
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 
@@ -22,7 +21,7 @@ public class AzureBlobStorageManager : IFileStorageManager
 
     public string GenerateSignedUrl(IFileEntry fileEntry)
     {
-        var blobClient = _container.GetBlobClient(GetBlobName(fileEntry));
+        BlobClient blobClient = _container.GetBlobClient(GetBlobName(fileEntry));
         var url = blobClient.GenerateSasUri(BlobSasPermissions.Read, DateTimeOffset.UtcNow.AddMinutes(10));
 
         return url.ToString();

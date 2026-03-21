@@ -160,8 +160,7 @@ public class FilesController : Controller
 
         var stream = await _fileManager.DownloadAsync(fileEntryModel);
 
-        // no use
-        var ext = Path.GetExtension(fileEntryImage.ImageLocation).ToLowerInvariant();
+        //var ext = Path.GetExtension(fileEntryImage.ImageLocation).ToLowerInvariant();
 
         return File(stream, fileEntry.Description, WebUtility.HtmlEncode(fileEntry.FileName));
     }
@@ -170,12 +169,33 @@ public class FilesController : Controller
     public async Task<IActionResult> GetSignedUrl(Guid id)
     {
         var fileEntry = await _fileEntryService.GetByIdAsync(id);
+
         if (fileEntry == null)
         {
-            return NotFound();
+            return NotFound("File entry not found.");
         }
 
-        var url = _fileManager.GenerateSignedUrl(fileEntry.ToModel());
+        var fileEntryImage = _fileEntryImageRepository.GetQueryableSet()
+        .Where(x => x.FileEntryId == fileEntry.Id)
+        .Select(x => new FileEntryImageModel
+        {
+            ImageLocation = x.ImageLocation
+        }).FirstOrDefault();
+
+        if (fileEntryImage == null || string.IsNullOrEmpty(fileEntryImage.ImageLocation))
+        {
+            return NotFound("File entry image not found.");
+        }
+
+        var fileEntryModel = new FileEntryModel
+        {
+            Id = fileEntry.Id,
+            FileName = fileEntry.FileName,
+            FileLocation = fileEntryImage.ImageLocation
+        };
+
+        var url = _fileManager.GenerateSignedUrl(fileEntryModel);
+
         return Ok(url);
     }
 

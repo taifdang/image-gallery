@@ -9,6 +9,10 @@ export function getList() {
     return apiClient.get<FileEntryModel[]>("api/files");
 }
 
+export function getSignedUrl(id: string) {
+    return apiClient.get<string>(`api/files/${id}/signedurl`);
+}
+
 export async function uploadFile(file: File) {
 
     const formData = new FormData();

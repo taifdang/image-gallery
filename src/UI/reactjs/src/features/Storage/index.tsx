@@ -2,7 +2,7 @@ import { Container, useDrawer } from "@chakra-ui/react"
 import { FileUploadDrawer, StorageHeader, StorageTable } from "./components";
 import { toaster } from "../../components/ui/toaster";
 import { useStorage } from "./hooks/useStorage";
-import { uploadFile, deleteFile, deleteFiles, downloadFile } from "./services/storage-service";
+import { uploadFile, deleteFile, deleteFiles, downloadFile, getSignedUrl } from "./services/storage-service";
 import { useState } from "react";
 
 export function StoragePage() {
@@ -144,26 +144,17 @@ export function StoragePage() {
             });
     }
 
-    // Header:
-    // {
-    //   Content-Disposition: inline;
-    // }
-
     const handlePreview = async (id: string) => {
         try {
-            const response = await downloadFile(id);
+            const response = await getSignedUrl(id);
 
-            const blob = new Blob([response.data], {
-                type: response.headers["content-type"]
-            });
+            console.log("Signed URL:", response.data);
 
-            const url = URL.createObjectURL(blob);
+            if (!response.data) {
+                throw new Error("Invalid signed URL");
+            }
 
-            window.open(url);
-
-            setTimeout(() => {
-                URL.revokeObjectURL(url);
-            }, 5000);
+            window.open(response.data);
 
         } catch {
             toaster.create({
